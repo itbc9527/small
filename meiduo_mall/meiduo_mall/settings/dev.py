@@ -34,7 +34,12 @@ SECRET_KEY = 'jlr^!1xu6-fg0b0rcs3=mfk3w@254!yvgs7g%h1bldfcs%if!6'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'api.meiduo.site',
+    '127.0.0.1',
+    'localhost',
+    'www.meiduo.site',
+]
 
 
 # Application definition
@@ -47,6 +52,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'corsheaders',
     'users.apps.UsersConfig',
 ]
 
@@ -58,7 +64,18 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
+
+# CORS
+CORS_ORIGIN_WHITELIST = (
+    '127.0.0.1:8080',
+    'localhost:8080',
+    'www.meiduo.site:8080',
+    'api.meiduo.site:8000'
+)
+
+CORS_ALLOW_CREDENTIAS = True
 
 ROOT_URLCONF = 'meiduo_mall.urls'
 
@@ -89,31 +106,40 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'HOST': '127.0.0.1',  # 数据库主机
         'PORT': 3306,
-        'USER': 'bc9527',
-        'PASSWORD': 'bc9527',
+        'USER': 'bc9528',
+        'PASSWORD': 'bc9528',
         'NAME': 'meiduo_mall',
     }
 }
 
-#
+# redis 数据库配置
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://10.211.55.5:6379/0",
+        "LOCATION": "redis://127.0.0.1:6379/0",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
     },
     "session": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://10.211.55.5:6379/1",
+        "LOCATION": "redis://127.0.0.1:6379/1",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
-    }
+    },
+    "verify_codes": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/2",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    },
 }
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "session"
+
+
 
 
 
@@ -202,3 +228,6 @@ REST_FRAMEWORK = {
     # 异常处理
     'EXCEPTION_HANDLER': 'meiduo_mall.utils.exceptions.exception_handler'
 }
+
+# 自定义用户模型
+AUTH_USER_MODEL = 'users.User'

@@ -97,7 +97,7 @@
       <option name="m_limit" value="5" />
     </inspection_tool>
     <inspection_tool class="PlatformDetectionJS" enabled="true" level="WARNING" enabled_by_default="true" />
-    <inspection_tool class="PyAbstractClassInspection" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="PyAbstractClassInspection" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="PyArgumentEqualDefaultInspection" enabled="true" level="TYPO" enabled_by_default="true" />
     <inspection_tool class="PyArgumentListInspection" enabled="true" level="TYPO" enabled_by_default="true" />
     <inspection_tool class="PyAssignmentToLoopOrWithParameterInspection" enabled="true" level="TYPO" enabled_by_default="true" />
@@ -154,10 +154,11 @@
     <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="TYPO" enabled_by_default="true">
       <option name="ignoredPackages">
         <value>
-          <list size="3">
+          <list size="4">
             <item index="0" class="java.lang.String" itemvalue="scrapy-redis" />
             <item index="1" class="java.lang.String" itemvalue="scrapy" />
             <item index="2" class="java.lang.String" itemvalue="pymysql" />
+            <item index="3" class="java.lang.String" itemvalue="django" />
           </list>
         </value>
       </option>
