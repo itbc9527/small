@@ -8,6 +8,9 @@ from . import views
 
 urlpatterns = [
     url(r"^image_codes/(?P<image_code_id>[\w-]+)/$", views.ImageCodeView.as_view()),
-    url(r"^mobiles/(?P<mobile>[\d]+)/count/$", views.ValidateMobileView.as_view()),
-    url(r'^sms_codes/(?P<mobile>[\d]+)/$', views.SmsCodeView.as_view()),
+    url(r"^mobiles/(?P<mobile>\d+)/count/$", views.ValidateMobileView.as_view()),
+    url(r'^sms_codes/(?P<mobile>\d+)/$', views.SmsCodeView.as_view()),
+    url(r'^usernames/(?P<username>\w+)/count/$', views.ValidateUsernameView.as_view()),
+    url(r"^users/$", views.UserLoginView.as_view()),
+    url(r"^authorizations/$", views.AuthorizateView.as_view())
 ]

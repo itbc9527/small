@@ -4,11 +4,10 @@
 # @Date  :18-10-26
 # @Desc  :
 import re
-
 from django_redis import get_redis_connection
 from rest_framework import serializers
-
 from users.models import User
+from utils.utils import gen_jwt
 
 
 class ValidateMobileSerializser(serializers.Serializer):
@@ -25,6 +24,21 @@ class ValidateMobileSerializser(serializers.Serializer):
         else:
             self.context['view'].count = 1
             raise serializers.ValidationError("手机号已经被注册")
+
+
+class ValidateUsernameSerializser(serializers.Serializer):
+    """验证用户名"""
+    username = serializers.CharField(label="用户名", min_length=5, max_length=20)
+
+    def validate_username(self, value):
+        try:
+            user = User.objects.get(username=value)
+        except User.DoesNotExist:
+            self.context['view'].count = 0
+            return value
+        else:
+            self.context['view'].count = 1
+            raise serializers.ValidationError("该用户已经注册")
 
 
 class SmsCodeSerializer(ValidateMobileSerializser):
@@ -54,6 +68,67 @@ class SmsCodeSerializer(ValidateMobileSerializser):
         redis_conn.delete("img_%s" % image_code_id)
         return attrs
 
+
+class UserLoginSerializer(ValidateMobileSerializser, ValidateUsernameSerializser):
+    """用户注册"""
+    password = serializers.CharField(label="密码", min_length=8, max_length=20, write_only=True)
+    password2 = serializers.CharField(label="确认密码", min_length=8, max_length=20)
+
+    sms_code = serializers.CharField(label="短信验证码", min_length=6, max_length=6)
+    allow = serializers.BooleanField(label="同意协议")
+
+    def validate(self, attrs):
+        if attrs.get('allow') is False:
+            raise serializers.ValidationError("请同意协议")
+
+        if attrs.get('password') != attrs.get('password2'):
+            raise serializers.ValidationError("两次密码输入不一致")
+
+        redis_conn = get_redis_connection('verify_codes')
+        real_sms_code = redis_conn.get("sms_%s" % attrs.get('mobile'))
+        if not real_sms_code:
+            raise serializers.ValidationError('验证码过期')
+        if real_sms_code.decode() != attrs.get('sms_code'):
+            raise serializers.ValidationError('验证码错误')
+
+        return attrs
+
+    def create(self, validated_data):
+        user = User(
+            username=validated_data['username'],
+            mobile=validated_data['mobile'],
+        )
+        user.set_password(validated_data['password'])
+        user.save()
+        token = gen_jwt(user)
+        user.token = token
+        return user
+
+
+class AuthorizateSerializer(serializers.Serializer):
+    username = serializers.CharField(label="用户名", min_length=5, max_length=20, required=False)
+    password = serializers.CharField(label="密码", min_length=8, max_length=20, write_only=True)
+    mobile = serializers.CharField(label='手机号', max_length=11, min_length=11, required=False)
+
+    @staticmethod
+    def check_and_sign(user, attrs):
+        user.check_password(attrs['password'])
+        token = gen_jwt(user)
+        attrs['token'] = token
+        return attrs
+
+    def validate(self, attrs):
+        try:
+            user = User.objects.get(username=attrs["username"])
+        except User.DoesNotExist:
+            try:
+                user = User.objects.get(mobile=attrs["username"])
+            except User.DoesNotExist:
+                raise serializers.ValidationError("该用户不存在")
+            else:
+                return self.check_and_sign(user, attrs)
+        else:
+            return self.check_and_sign(user, attrs)
 
 
 

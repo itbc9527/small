@@ -142,10 +142,10 @@
     <inspection_tool class="PyMandatoryEncodingInspection" enabled="true" level="TYPO" enabled_by_default="true" />
     <inspection_tool class="PyMethodFirstArgAssignmentInspection" enabled="true" level="TYPO" enabled_by_default="true" />
     <inspection_tool class="PyMethodMayBeStaticInspection" enabled="true" level="TYPO" enabled_by_default="true" />
-    <inspection_tool class="PyMethodOverridingInspection" enabled="true" level="TYPO" enabled_by_default="true" />
+    <inspection_tool class="PyMethodOverridingInspection" enabled="false" level="TYPO" enabled_by_default="false" />
     <inspection_tool class="PyMethodParametersInspection" enabled="true" level="TYPO" enabled_by_default="true" />
     <inspection_tool class="PyMissingConstructorInspection" enabled="true" level="TYPO" enabled_by_default="true" />
-    <inspection_tool class="PyMissingOrEmptyDocstringInspection" enabled="true" level="TYPO" enabled_by_default="true" />
+    <inspection_tool class="PyMissingOrEmptyDocstringInspection" enabled="false" level="TYPO" enabled_by_default="false" />
     <inspection_tool class="PyMissingTypeHintsInspection" enabled="true" level="TYPO" enabled_by_default="true" />
     <inspection_tool class="PyNestedDecoratorsInspection" enabled="true" level="TYPO" enabled_by_default="true" />
     <inspection_tool class="PyNonAsciiCharInspection" enabled="true" level="TYPO" enabled_by_default="true" />
